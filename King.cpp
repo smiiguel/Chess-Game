@@ -10,12 +10,16 @@ King::King ( int tableRow, int tableColumn, Color color, int textureRow, int tex
     Pieces(tableRow, tableColumn, color, textureRow, textureColumn, repeat, moves) { type = Pieces::KING; }
 
 bool King::valid ( std::pair < int, int > mPair, Pieces* const ChessPiece[8][8]) const {
+
     if( mPair.first >= 8 || mPair.first < 0 )
         return false;
     if( mPair.second >= 8 || mPair.second < 0 )
         return false;
     if( ChessPiece[mPair.first][mPair.second] == NULL )
-        return true;
+        if( !point_in_chess(mPair, ChessPiece) )
+            return true;
+        else
+            return false;
     else
         if( ChessPiece[mPair.first][mPair.second] -> getColor() == getColor() )
             return false;
@@ -59,36 +63,68 @@ bool King::with_Rook( std::pair < int, int > mPair, Pieces* const ChessPiece[8][
     {
         if( mPair.first + i < 8 )
             if( ChessPiece[mPair.first + i][mPair.second] != NULL )
+            {
                 if( ChessPiece[mPair.first + i][mPair.second] -> getType() == Pieces::ROOK &&
                         ChessPiece[mPair.first + i][mPair.second] -> getColor() != getColor() )
                     return true;
+                if( ChessPiece[mPair.first + i][mPair.second] -> getType() != Pieces::ROOK &&
+                        ChessPiece[mPair.first + i][mPair.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[mPair.first + i][mPair.second] -> getColor() == getColor() &&
+                        ChessPiece[mPair.first + i][mPair.second] -> getType() != KING )
+                    break;
+            }
     }
 
     for(int i = 1; i < 8; i++)
     {
         if( mPair.first - i >= 0)
             if( ChessPiece[mPair.first - i][mPair.second] != NULL )
+            {
                 if( ChessPiece[mPair.first - i][mPair.second] -> getType() == Pieces::ROOK &&
                         ChessPiece[mPair.first - i][mPair.second] -> getColor() != getColor() )
                     return true;
+                if( ChessPiece[mPair.first - i][mPair.second] -> getType() != Pieces::ROOK &&
+                        ChessPiece[mPair.first - i][mPair.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[mPair.first - i][mPair.second] -> getColor() == getColor() &&
+                        ChessPiece[mPair.first - i][mPair.second] -> getType() != KING )
+                    break;
+            }
     }
 
     for(int i = 1; i < 8; i++)
     {
         if( mPair.second + i < 8)
             if( ChessPiece[mPair.first][mPair.second + i] != NULL )
+            {
                 if( ChessPiece[mPair.first][mPair.second + i] -> getType() == Pieces::ROOK &&
                         ChessPiece[mPair.first][mPair.second + i] -> getColor() != getColor() )
                     return true;
+                if( ChessPiece[mPair.first][mPair.second + i] -> getType() != Pieces::ROOK &&
+                        ChessPiece[mPair.first][mPair.second + i] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[mPair.first][mPair.second + i] -> getColor() == getColor() &&
+                        ChessPiece[mPair.first][mPair.second + i] -> getType() != KING )
+                    break;
+            }
     }
 
     for(int i = 1; i < 8; i++)
     {
         if( mPair.second - i >= 0)
             if( ChessPiece[mPair.first][mPair.second - i] != NULL )
+            {
                 if( ChessPiece[mPair.first][mPair.second - i] -> getType() == Pieces::ROOK &&
                         ChessPiece[mPair.first][mPair.second - i] -> getColor() != getColor() )
                     return true;
+                if( ChessPiece[mPair.first][mPair.second - i] -> getType() != Pieces::ROOK &&
+                        ChessPiece[mPair.first][mPair.second - i] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[mPair.first][mPair.second - i] -> getColor() == getColor() &&
+                        ChessPiece[mPair.first][mPair.second - i] -> getType() != KING )
+                    break;
+            }
     }
     return false;
 }
@@ -236,6 +272,250 @@ bool King::with_King( std::pair < int, int > mPair, Pieces* const ChessPiece[8][
     return false;
 }
 
+bool King::with_Bishop( std::pair < int, int > mPair, Pieces* const ChessPiece[8][8] ) const {
+
+    std::pair < int, int > aux = mPair;
+
+    for(int i = 1; i < 8; i++)
+    {
+        aux.first -= i;
+        aux.second -= i;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+            {
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::BISHOP &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[aux.first][aux.second] -> getType() != Pieces::BISHOP &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[aux.first][aux.second] -> getColor() == getColor() &&
+                        ChessPiece[aux.first][aux.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    aux = mPair;
+    for(int i = 1; i < 8; i++)
+    {
+        aux.first -= i;
+        aux.second += i;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+            {
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::BISHOP &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[aux.first][aux.second] -> getType() != Pieces::BISHOP &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[aux.first][aux.second] -> getColor() == getColor() &&
+                        ChessPiece[aux.first][aux.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    aux = mPair;
+    for(int i = 1; i < 8; i++)
+    {
+        aux.first += i;
+        aux.second -= i;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+            {
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::BISHOP &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[aux.first][aux.second] -> getType() != Pieces::BISHOP &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[aux.first][aux.second] -> getColor() == getColor() &&
+                        ChessPiece[aux.first][aux.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    aux = mPair;
+    for(int i = 1; i < 8; i++)
+    {
+        aux.first += i;
+        aux.second += i;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+            {
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::BISHOP &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[aux.first][aux.second] -> getType() != Pieces::BISHOP &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[aux.first][aux.second] -> getColor() == getColor() &&
+                        ChessPiece[aux.first][aux.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    return false;
+}
+
+bool King::with_Queen( std::pair < int, int > mPair, Pieces* const ChessPiece[8][8] ) const {
+
+    std::pair < int, int > aux = mPair;
+
+    for(int i = 1; i < 8; i++)
+    {
+        aux.first -= i;
+        aux.second -= i;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+            {
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::QUEEN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[aux.first][aux.second] -> getType() != Pieces::QUEEN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[aux.first][aux.second] -> getColor() == getColor() &&
+                        ChessPiece[aux.first][aux.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    aux = mPair;
+    for(int i = 1; i < 8; i++)
+    {
+        aux.first -= i;
+        aux.second += i;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+            {
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::QUEEN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[aux.first][aux.second] -> getType() != Pieces::QUEEN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[aux.first][aux.second] -> getColor() == getColor() &&
+                        ChessPiece[aux.first][aux.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    aux = mPair;
+    for(int i = 1; i < 8; i++)
+    {
+        aux.first += i;
+        aux.second -= i;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+           if( ChessPiece[aux.first][aux.second] != NULL )
+            {
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::QUEEN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[aux.first][aux.second] -> getType() != Pieces::QUEEN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[aux.first][aux.second] -> getColor() == getColor() &&
+                        ChessPiece[aux.first][aux.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    aux = mPair;
+    for(int i = 1; i < 8; i++)
+    {
+        aux.first += i;
+        aux.second += i;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+            {
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::QUEEN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[aux.first][aux.second] -> getType() != Pieces::QUEEN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[aux.first][aux.second] -> getColor() == getColor() &&
+                        ChessPiece[aux.first][aux.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    for(int i = 1; i < 8; i++)
+    {
+        if( mPair.first + i < 8 )
+            if( ChessPiece[mPair.first + i][mPair.second] != NULL )
+            {
+                if( ChessPiece[mPair.first + i][mPair.second] -> getType() == Pieces::ROOK &&
+                        ChessPiece[mPair.first + i][mPair.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[mPair.first + i][mPair.second] -> getType() != Pieces::ROOK &&
+                        ChessPiece[mPair.first + i][mPair.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[mPair.first + i][mPair.second] -> getColor() == getColor() &&
+                        ChessPiece[mPair.first + i][mPair.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    for(int i = 1; i < 8; i++)
+    {
+        if( mPair.first - i >= 0)
+            if( ChessPiece[mPair.first - i][mPair.second] != NULL )
+            {
+                if( ChessPiece[mPair.first - i][mPair.second] -> getType() == Pieces::ROOK &&
+                        ChessPiece[mPair.first - i][mPair.second] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[mPair.first - i][mPair.second] -> getType() != Pieces::ROOK &&
+                        ChessPiece[mPair.first - i][mPair.second] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[mPair.first - i][mPair.second] -> getColor() == getColor() &&
+                        ChessPiece[mPair.first - i][mPair.second] -> getType() != KING )
+                    break;
+            }
+    }
+
+    for(int i = 1; i < 8; i++)
+    {
+        if( mPair.second + i < 8)
+            if( ChessPiece[mPair.first][mPair.second + i] != NULL )
+            {
+                if( ChessPiece[mPair.first][mPair.second + i] -> getType() == Pieces::ROOK &&
+                        ChessPiece[mPair.first][mPair.second + i] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[mPair.first][mPair.second + i] -> getType() != Pieces::ROOK &&
+                        ChessPiece[mPair.first][mPair.second + i] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[mPair.first][mPair.second + i] -> getColor() == getColor() &&
+                        ChessPiece[mPair.first][mPair.second + i] -> getType() != KING )
+                    break;
+            }
+    }
+
+    for(int i = 1; i < 8; i++)
+    {
+        if( mPair.second - i >= 0)
+            if( ChessPiece[mPair.first][mPair.second - i] != NULL )
+            {
+                if( ChessPiece[mPair.first][mPair.second - i] -> getType() == Pieces::ROOK &&
+                        ChessPiece[mPair.first][mPair.second - i] -> getColor() != getColor() )
+                    return true;
+                if( ChessPiece[mPair.first][mPair.second - i] -> getType() != Pieces::ROOK &&
+                        ChessPiece[mPair.first][mPair.second - i] -> getColor() != getColor() )
+                    break;
+                if( ChessPiece[mPair.first][mPair.second - i] -> getColor() == getColor() &&
+                        ChessPiece[mPair.first][mPair.second - i] -> getType() != KING )
+                    break;
+            }
+    }
+
+    return false;
+}
+
+bool King::with_Pawn( std::pair < int, int > mPair, Pieces* const ChessPiece[8][8] ) const {
+
+}
+
 bool King::point_in_chess ( std::pair < int, int > mPair, Pieces* const ChessPiece[8][8] ) const {
 
     if( with_Rook( mPair, ChessPiece ) )
@@ -243,6 +523,10 @@ bool King::point_in_chess ( std::pair < int, int > mPair, Pieces* const ChessPie
     if( with_Knight( mPair, ChessPiece ) )
         return true;
     if( with_King( mPair, ChessPiece ) )
+        return true;
+    if( with_Bishop( mPair, ChessPiece ) )
+        return true;
+    if( with_Queen( mPair, ChessPiece ) )
         return true;
     return false;
 }

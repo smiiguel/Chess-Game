@@ -12,51 +12,66 @@ class Pieces{
             WHITE,
             BLACK
         };
+        enum Piece_type{
+            PAWN,
+            ROOK,
+            KNIGHT,
+            BISHOP,
+            QUEEN,
+            KING
+        };
 
     protected:
-        int m_pieceHeight;
-        int m_pieceWidth;
+        std::pair < int, int > m_pozition; //intre 0 si 7
+        Color m_color;
+        Piece_type type;
         bool m_alive;
         bool m_selected;
         bool m_moved;
+
+        std::pair < int, int > m_texture_aux;
         int m_repeat;
         int m_moves;
         int sign(Color);
-        SDL_Point* m_directions;
-        SDL_Point m_tableCorner; // coordonatele de pe tabla unde va fi afiasata piesa(coltul patratelului)
-        SDL_Point m_textureCorner; //coordonatele din poza cu piese de unde va fi afisata piesa(tot colt)
-        Color m_color;
-        SDL_Texture* m_texture; //textura
+//        int m_pieceHeight;
+//        int m_pieceWidth;
+//
+//        SDL_Point* m_directions;
+//        SDL_Point m_tableCorner; // coordonatele de pe tabla unde va fi afiasata piesa(coltul patratelului)
+//        SDL_Point m_textureCorner; //coordonatele din poza cu piese de unde va fi afisata piesa(tot colt)
+//
+//        SDL_Texture* m_texture; //textura
 
     public:
         Pieces();
-        Pieces(int column, int row, Color color,int,int,int,int);
+        Pieces(std::pair < int, int >, Color, std::pair < int, int >, int, int);
+        Pieces(int, int, Color, int, int, int, int);
         virtual ~Pieces();
         //SDL_Point getEvent(SDL_Event*);
 
-        inline int getPieceWidth(){
-            return m_pieceWidth;
-        }
-
-        inline int getPieceHeight(){
-            return m_pieceHeight;
-        }
-
-        inline int getTableCornerX(){
-            return m_tableCorner.x;
-        }
-
-        inline int getTableCornerY(){
-            return m_tableCorner.y;
-        }
-
-        inline int getTextureCornerX(){
-            return m_textureCorner.x;
-        }
-
-        inline int getTextureCornerY(){
-            return m_textureCorner.y;
-        }
+//        inline int getPieceWidth(){
+//            return m_pieceWidth;
+//        }
+//
+//        inline int getPieceHeight(){
+//            return m_pieceHeight;
+//        }
+//
+//        inline int getTableCornerX(){
+//            return m_tableCorner.x;
+//        }
+//
+//        inline int getTableCornerY(){
+//            return m_tableCorner.y;
+//        }
+//
+//        inline int getTextureCornerX(){
+//            return m_textureCorner.x;
+//        }
+//
+//        inline int getTextureCornerY(){
+//            return m_textureCorner.y;
+//        }
 
         inline void setSelected(bool x){
             m_selected = x;
@@ -66,27 +81,27 @@ class Pieces{
             m_alive = x;
         }
 
-        inline bool isSelected(){
+        inline bool isSelected() const {
             return m_selected;
         }
 
-        inline bool isAlive(){
+        inline bool isAlive() const {
             return m_alive;
         }
 
-        inline void setAlpha(int a){
-            SDL_SetTextureAlphaMod(m_texture,a);
-        }
+//        inline void setAlpha(int a){
+//            SDL_SetTextureAlphaMod(m_texture,a);
+//        }
+//
+//        inline void setTableCornerX(int x){
+//            m_tableCorner.x = x;
+//        }
+//
+//        inline void setTableCornerY(int y){
+//            m_tableCorner.y = y;
+//        }
 
-        inline void setTableCornerX(int x){
-            m_tableCorner.x = x;
-        }
-
-        inline void setTableCornerY(int y){
-            m_tableCorner.y = y;
-        }
-
-        inline Color getColor(){
+        inline Color getColor() const {
             return m_color;
         }
 
@@ -94,27 +109,28 @@ class Pieces{
             m_moved = x;
         }
 
-       // int getColumn();
+        inline bool getMoved() const {
+            return m_moved;
+        }
+
+        inline int getColumn() const {
+            return m_pozition.first;
+        }
         //void setColumn(int column);
-        //int getRow();
+        inline int getRow() const {
+            return m_pozition.second;
+        }
         //void setRow(int row);
-        //Color getColor();
-        //void setColor(Color color); //Metoda setColor s-ar putea sa nu fie utila vreodata, nu vad vreo situatie in care sa vrem sa
-                                    //schimbam culoarea unei piese. Ramane de vazut daca e sau nu nevoie
+        inline std::pair <int, int> getPozition() const {
+            return m_pozition;
+        }
 
-        /*Returneaza un vector cu toate coordonatele (coloana, rand) pe care piesa se poate muta.
-        Trebuie sa primeasca sub o forma configuratia tablei.
-        Ramane de vazut daca forma va fi asta sau alta (de ex: sa primeasca un obiect din clasa Tabla
-        */
+        inline Piece_type getType() const {
+            return type;
+        }
 
-        virtual std::vector<std::pair<int, int>> getPossibleMoves(int v[8][8],int,int,std::vector<Pieces*>){}
-
-        /*Returneza daca mutarea piesei la coloana x si randul y este o mutare valida.
-        Aceeasi problema ca mai sus
-        Dupa ce getPossibleMoves e implementata, validateMove s-ar putea eventual implementa pur si simplu in vectorul dat de getPossibleMoves
-        */
-
-        //virtual bool isValidMove(int x, int y, const std::vector<Piece*>& board) = 0;
+        virtual bool valid ( std::pair < int, int >, Pieces* const [][8] ) const = 0;
+        virtual std::vector < std::pair < int, int > > getPossibleMoves(Pieces* const [][8] ) const = 0;
 };
 
 

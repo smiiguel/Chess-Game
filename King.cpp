@@ -54,6 +54,32 @@ std::vector < std::pair < int, int > > King::getPossibleMoves(Pieces* const Ches
     aux = std::make_pair ( m_pozition.first + 1, m_pozition.second - 1 );
     if( valid ( aux, ChessPiece ) )
        mList.push_back( aux );
+
+    if( castling_left(ChessPiece) ) //netestat
+    {
+        switch( getColor() )
+        {
+            case Pieces::WHITE :
+                if( getPozition() == std::make_pair(0, 3) )
+                    mList.push_back( std::make_pair(0, 1) );
+            case Pieces::BLACK :
+                if( getPozition() == std::make_pair(7, 3) )
+                    mList.push_back( std::make_pair(7, 1) );
+        }
+    }
+    if( castling_right(ChessPiece) ) // netestat
+    {
+        switch( getColor() )
+        {
+            case Pieces::WHITE :
+                if( getPozition() == std::make_pair(0, 3) )
+                    mList.push_back( std::make_pair(0, 5) );
+            case Pieces::BLACK :
+                if( getPozition() == std::make_pair(7, 3) )
+                    mList.push_back( std::make_pair(7, 5) );
+        }
+    }
+
     return mList;
 }
 
@@ -514,6 +540,50 @@ bool King::with_Queen( std::pair < int, int > mPair, Pieces* const ChessPiece[8]
 
 bool King::with_Pawn( std::pair < int, int > mPair, Pieces* const ChessPiece[8][8] ) const {
 
+}
+
+bool King::castling_right ( Pieces* const ChessPiece[8][8] ) const {
+
+    switch( getColor() )
+    {
+        case Pieces::WHITE : {
+            if(ChessPiece[0][7] != NULL)
+                if( ChessPiece[0][4] == NULL && ChessPiece[0][5] == NULL && ChessPiece[0][6] == NULL && !m_moved &&
+                        ( ChessPiece[0][7] -> getType() == ROOK && ChessPiece[0][7] -> getMoved() == false ) &&
+                        ChessPiece[0][7] -> getColor() == Pieces::WHITE )
+                    return true;
+        }
+        case Pieces::BLACK : {
+            if(ChessPiece[7][7] != NULL)
+                if( ChessPiece[7][4] == NULL && ChessPiece[7][5] == NULL && ChessPiece[7][6] == NULL && !m_moved &&
+                        ( ChessPiece[7][7] -> getType() == ROOK && ChessPiece[7][7] -> getMoved() == false ) &&
+                        ChessPiece[7][7] -> getColor() == Pieces::BLACK )
+                    return true;
+        }
+    }
+    return false;
+}
+
+bool King::castling_left ( Pieces* const ChessPiece[8][8] ) const {
+
+    switch( getColor() )
+    {
+        case Pieces::WHITE : {
+            if(ChessPiece[0][0] != NULL)
+                if( ChessPiece[0][2] == NULL && ChessPiece[0][1] == NULL && !m_moved &&
+                        ( ChessPiece[0][0] -> getType() == ROOK && ChessPiece[0][0] -> getMoved() == false ) &&
+                        ChessPiece[0][0] -> getColor() == Pieces::WHITE )
+                    return true;
+        }
+        case Pieces::BLACK : {
+            if(ChessPiece[7][0] != NULL)
+                if( ChessPiece[7][2] == NULL && ChessPiece[7][1] == NULL && !m_moved &&
+                        ( ChessPiece[7][0] -> getType() == ROOK && ChessPiece[7][0] -> getMoved() == false ) &&
+                        ChessPiece[7][0] -> getColor() == Pieces::BLACK )
+                    return true;
+        }
+    }
+    return false;
 }
 
 bool King::point_in_chess ( std::pair < int, int > mPair, Pieces* const ChessPiece[8][8] ) const {

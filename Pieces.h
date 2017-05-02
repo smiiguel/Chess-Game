@@ -7,6 +7,8 @@
 
 class Pieces{
 
+    friend class PiecesManager;
+
     public:
         enum Color{
             WHITE,
@@ -114,11 +116,11 @@ class Pieces{
         }
 
         inline int getColumn() const {
-            return m_pozition.first;
+            return m_pozition.second;
         }
         //void setColumn(int column);
         inline int getRow() const {
-            return m_pozition.second;
+            return m_pozition.first;
         }
         //void setRow(int row);
         inline std::pair <int, int> getPozition() const {

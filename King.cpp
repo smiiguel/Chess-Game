@@ -55,7 +55,7 @@ std::vector < std::pair < int, int > > King::getPossibleMoves(Pieces* const Ches
     if( valid ( aux, ChessPiece ) )
        mList.push_back( aux );
 
-    if( castling_left(ChessPiece) ) //netestat
+    if( castling_left(ChessPiece) )
     {
         switch( getColor() )
         {
@@ -67,7 +67,7 @@ std::vector < std::pair < int, int > > King::getPossibleMoves(Pieces* const Ches
                     mList.push_back( std::make_pair(7, 1) );
         }
     }
-    if( castling_right(ChessPiece) ) // netestat
+    if( castling_right(ChessPiece) )
     {
         switch( getColor() )
         {
@@ -540,6 +540,44 @@ bool King::with_Queen( std::pair < int, int > mPair, Pieces* const ChessPiece[8]
 
 bool King::with_Pawn( std::pair < int, int > mPair, Pieces* const ChessPiece[8][8] ) const {
 
+    std::pair < int, int > aux;
+
+    if( getColor() == Pieces::BLACK )
+    {
+        aux.first = mPair.first - 1;
+        aux.second = mPair.second - 1;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::PAWN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+
+        aux.first = mPair.first - 1;
+        aux.second = mPair.second + 1;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::PAWN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+    }
+    else
+    {
+        aux.first = mPair.first + 1;
+        aux.second = mPair.second - 1;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::PAWN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+
+        aux.first = mPair.first + 1;
+        aux.second = mPair.second + 1;
+        if( aux.first < 8 &&  aux.first >= 0 && aux.second < 8 &&  aux.second >= 0 )
+            if( ChessPiece[aux.first][aux.second] != NULL )
+                if( ChessPiece[aux.first][aux.second] -> getType() == Pieces::PAWN &&
+                        ChessPiece[aux.first][aux.second] -> getColor() != getColor() )
+                    return true;
+    }
 }
 
 bool King::castling_right ( Pieces* const ChessPiece[8][8] ) const {
@@ -597,6 +635,8 @@ bool King::point_in_chess ( std::pair < int, int > mPair, Pieces* const ChessPie
     if( with_Bishop( mPair, ChessPiece ) )
         return true;
     if( with_Queen( mPair, ChessPiece ) )
+        return true;
+    if( with_Pawn( mPair, ChessPiece ) )
         return true;
     return false;
 }

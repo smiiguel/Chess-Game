@@ -52,5 +52,11 @@ bool PiecesManager::RevivePieces( std::pair < int, int > MyPair ) {
 }
 
 bool PiecesManager::MovePieces( std::pair < int, int > Initial, std::pair < int, int > Final) {
-
+    if(Chess[Initial.first][Initial.second] == NULL)
+        return 0;
+    std::vector < std::pair < int, int > > moves = Chess[Initial.first][Initial.second] -> getPossibleMoves( Chess );
+    for ( std::vector < std::pair < int, int > >::iterator it = moves.begin(); it != moves.end(); ++it )
+        if( *it == Final )
+            return true;
+    return false;
 }

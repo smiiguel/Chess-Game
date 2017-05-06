@@ -7,8 +7,6 @@
 
 class Pieces{
 
-    friend class PiecesManager;
-
     public:
         enum Color{
             WHITE,

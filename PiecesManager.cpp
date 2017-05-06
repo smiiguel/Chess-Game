@@ -31,7 +31,26 @@ void PiecesManager::GetPieces( Pieces* Matrix[][8] ) const{
 }
 
 bool PiecesManager::AddPieces( Pieces* piece ) {
-    Chess[piece->m_pozition.first][piece->m_pozition.second] = piece;
+    if(piece == NULL)
+        return 0;
+    Chess[piece->getRow()][piece->getColumn()] = piece;
     return 1;
 }
 
+bool PiecesManager::DeletePieces( std::pair < int, int > MyPair) {
+    if(Chess[MyPair.first][MyPair.second] == NULL)
+        return 0;
+    Chess[MyPair.first][MyPair.second] -> setAlive(false);
+    return 1;
+}
+
+bool PiecesManager::RevivePieces( std::pair < int, int > MyPair ) {
+    if(Chess[MyPair.first][MyPair.second] == NULL)
+        return 0;
+    Chess[MyPair.first][MyPair.second] -> setAlive(true);
+    return 1;
+}
+
+bool PiecesManager::MovePieces( std::pair < int, int > Initial, std::pair < int, int > Final) {
+
+}

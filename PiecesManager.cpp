@@ -145,7 +145,7 @@ std::vector<std::pair<int,int >> PiecesManager::HandleEvent(SDL_Point selected_p
                                                 ok = 0;
                                 }
                             if(ok)
-                                piece_moves.pop_back();
+                                piece_moves.pop_back(); // SI EVENTUAL UN MESAJ DE SAH MAT !!!!!!!!!!!!!!!!!!!
                         }
                     }
                 }

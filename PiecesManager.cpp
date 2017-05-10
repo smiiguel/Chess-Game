@@ -118,8 +118,10 @@ std::vector<std::pair<int,int >> PiecesManager::HandleEvent(SDL_Point selected_p
     std::cout << "Last piece: " << last_piece.y << " " << last_piece.x << std::endl;
     std::cout << "Selected piece: " << selected_piece.y << " " << selected_piece.x << std::endl << "\n";
 
+    bool is_king = false;
+
     if(!selected){
-        if(ChessPieces[selected_piece.y][selected_piece.x] != NULL){std::cout << "nu";
+        if(ChessPieces[selected_piece.y][selected_piece.x] != NULL){
            if(ChessPieces[selected_piece.y][selected_piece.x] -> getColor() ==(Pieces::Color)(turn % 2)){
                 actual_piece = selected_piece;
                 selected = true;
@@ -127,7 +129,6 @@ std::vector<std::pair<int,int >> PiecesManager::HandleEvent(SDL_Point selected_p
                 piece_moves = ChessPieces[selected_piece.y][selected_piece.x] -> getPossibleMoves(ChessPieces);
                 piece_moves.push_back(std::make_pair(selected_piece.y,selected_piece.x));
 
-                std::cout << "Adresa1:" << ChessPieces[selected_piece.y][selected_piece.x] << std::endl;
                 //for(int i = 0;i < piece_moves.size(); ++i)
                     //std::cout << piece_moves[i].first << " " << piece_moves[i].second << std::endl;
                 last_piece = selected_piece;
@@ -154,6 +155,29 @@ std::vector<std::pair<int,int >> PiecesManager::HandleEvent(SDL_Point selected_p
                 ChessPieces[last_piece.y][last_piece.x] -> setTableCornerX(selected_piece.x );
                 ChessPieces[last_piece.y][last_piece.x] -> setTableCornerY(selected_piece.y );
                 ChessPieces[last_piece.y][last_piece.x] -> setPozition({selected_piece.y,selected_piece.x});
+
+                if( ChessPieces[last_piece.y][last_piece.x] -> getType() == Pieces::KING)
+                    is_king = true;
+
+                if(is_king && (last_piece.x - selected_piece.x == 2) ) {
+                    ChessPieces[last_piece.y][last_piece.x] -> setMoved(true);
+                   // ChessPieces[last_piece.y][last_piece.x] -> setSelected(false);
+                    ChessPieces[last_piece.y][0] -> setTableCornerX( 2 );
+                    ChessPieces[last_piece.y][0] -> setTableCornerY(selected_piece.y );
+                    ChessPieces[last_piece.y][0] -> setPozition(std::make_pair(last_piece.y, 2));
+                    ChessPieces[last_piece.y][2] = ChessPieces[last_piece.y][0];
+                    ChessPieces[last_piece.y][0] = NULL;
+                }
+
+                if(is_king && (selected_piece.x - last_piece.x == 2) ) {
+                    ChessPieces[last_piece.y][last_piece.x] -> setMoved(true);
+                   // ChessPieces[last_piece.y][last_piece.x] -> setSelected(false);
+                    ChessPieces[last_piece.y][7] -> setTableCornerX( 4 );
+                    ChessPieces[last_piece.y][7] -> setTableCornerY(selected_piece.y );
+                    ChessPieces[last_piece.y][7] -> setPozition(std::make_pair(last_piece.y, 4));
+                    ChessPieces[last_piece.y][4] = ChessPieces[last_piece.y][7];
+                    ChessPieces[last_piece.y][7] = NULL;
+                }
 
                 if(ChessPieces[selected_piece.y][selected_piece.x] != NULL)
                     ChessPieces[selected_piece.y][selected_piece.x] -> setAlive(false);

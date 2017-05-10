@@ -26,7 +26,7 @@ std::vector < std::pair < int, int > > Rook::getPossibleMoves(Pieces* const Ches
     std::vector < std::pair < int, int > > mList;
     std::pair < int, int > aux;
 
-    for(int i = 1; i < 8 && ok; i++)
+    for(int i = 1; i < 8; i++)
     {
         aux = std::make_pair ( m_pozition.first + i, m_pozition.second );
         if( valid ( aux, ChessPiece ) )
@@ -38,7 +38,7 @@ std::vector < std::pair < int, int > > Rook::getPossibleMoves(Pieces* const Ches
                 break;
     }
 
-    for(int i = 1; i < 8 && ok; i++)
+    for(int i = 1; i < 8; i++)
     {
         aux = std::make_pair ( m_pozition.first - i, m_pozition.second );
         if( valid ( aux, ChessPiece ) )
@@ -50,7 +50,7 @@ std::vector < std::pair < int, int > > Rook::getPossibleMoves(Pieces* const Ches
                 break;
     }
 
-    for(int i = 1; i < 8 && ok; i++)
+    for(int i = 1; i < 8; i++)
     {
         aux = std::make_pair ( m_pozition.first, m_pozition.second + i );
         if( valid ( aux, ChessPiece ) )
@@ -62,7 +62,7 @@ std::vector < std::pair < int, int > > Rook::getPossibleMoves(Pieces* const Ches
                 break;
     }
 
-    for(int i = 1; i < 8 && ok; i++)
+    for(int i = 1; i < 8; i++)
     {
         aux = std::make_pair ( m_pozition.first, m_pozition.second - i );
         if( valid ( aux, ChessPiece ) )

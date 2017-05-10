@@ -2,11 +2,11 @@
 
 Knight::Knight () {}
 
-Knight::Knight ( std::pair < int, int > table, Color color, std::pair < int, int > texture, int repeat, int moves ) :
-    Pieces( table, color, texture, repeat, moves ) { type = Pieces::KNIGHT; }
-
-Knight::Knight ( int tableRow, int tableColumn, Color color, int textureRow, int textureColumn, int repeat, int moves ) :
-    Pieces(tableRow, tableColumn, color, textureRow, textureColumn, repeat, moves) { type = Pieces::KNIGHT; }
+/*Knight::Knight ( std::pair < int, int > table, Color color, std::pair < int, int > texture) :
+    Pieces( table, color, texture) { type = Pieces::KNIGHT; }
+*/
+Knight::Knight ( int tableRow, int tableColumn, Color color, int textureRow, int textureColumn) :
+    Pieces(tableRow, tableColumn, color, textureRow, textureColumn) { type = Pieces::KNIGHT; }
 
 bool Knight::valid ( std::pair < int, int > mPair, Pieces* const ChessPiece[8][8]) const {
     if( mPair.first >= 8 || mPair.first < 0 )

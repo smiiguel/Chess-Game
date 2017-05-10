@@ -128,6 +128,15 @@ std::vector<std::pair<int,int >> PiecesManager::HandleEvent(SDL_Point selected_p
                 ChessPieces[selected_piece.y][selected_piece.x] -> setSelected(true);
                 piece_moves = ChessPieces[selected_piece.y][selected_piece.x] -> getPossibleMoves(ChessPieces);
                 piece_moves.push_back(std::make_pair(selected_piece.y,selected_piece.x));
+                if(ChessPieces[selected_piece.y][selected_piece.x] -> getType() == Pieces::KING)
+                {
+                    if(King* k = dynamic_cast<King*>(ChessPieces[selected_piece.y][selected_piece.x]))
+                    {
+                        std::cout << "downcast from pieces to king successful\n";
+                        if(k -> are_in_chess(ChessPieces))
+                            piece_moves.pop_back();
+                    }
+                }
 
                 //for(int i = 0;i < piece_moves.size(); ++i)
                     //std::cout << piece_moves[i].first << " " << piece_moves[i].second << std::endl;
@@ -159,7 +168,7 @@ std::vector<std::pair<int,int >> PiecesManager::HandleEvent(SDL_Point selected_p
                 if( ChessPieces[last_piece.y][last_piece.x] -> getType() == Pieces::KING)
                     is_king = true;
 
-                if(is_king && (last_piece.x - selected_piece.x == 2) ) {
+                if(is_king && (last_piece.x - selected_piece.x == 2) ) { // MAKE CASTLING LEFT AND MOVE THE ROOK
                     ChessPieces[last_piece.y][last_piece.x] -> setMoved(true);
                    // ChessPieces[last_piece.y][last_piece.x] -> setSelected(false);
                     ChessPieces[last_piece.y][0] -> setTableCornerX( 2 );
@@ -169,7 +178,7 @@ std::vector<std::pair<int,int >> PiecesManager::HandleEvent(SDL_Point selected_p
                     ChessPieces[last_piece.y][0] = NULL;
                 }
 
-                if(is_king && (selected_piece.x - last_piece.x == 2) ) {
+                if(is_king && (selected_piece.x - last_piece.x == 2) ) { // MAKE CASTLING RIGHT AND MOVE THE ROOK
                     ChessPieces[last_piece.y][last_piece.x] -> setMoved(true);
                    // ChessPieces[last_piece.y][last_piece.x] -> setSelected(false);
                     ChessPieces[last_piece.y][7] -> setTableCornerX( 4 );

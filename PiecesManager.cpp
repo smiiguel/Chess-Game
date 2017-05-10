@@ -128,16 +128,15 @@ std::vector<std::pair<int,int >> PiecesManager::HandleEvent(SDL_Point selected_p
                 ChessPieces[selected_piece.y][selected_piece.x] -> setSelected(true);
                 piece_moves = ChessPieces[selected_piece.y][selected_piece.x] -> getPossibleMoves(ChessPieces);
                 piece_moves.push_back(std::make_pair(selected_piece.y,selected_piece.x));
-                if(ChessPieces[selected_piece.y][selected_piece.x] -> getType() == Pieces::KING)
-                {
-                    if(King* k = dynamic_cast<King*>(ChessPieces[selected_piece.y][selected_piece.x]))
-                    {
-                        std::cout << "downcast from pieces to king successful\n";
-                        if(k -> are_in_chess(ChessPieces))
-                            piece_moves.pop_back();
-                    }
-                }
-
+//                if(ChessPieces[selected_piece.y][selected_piece.x] -> getType() == Pieces::KING)
+//                {
+//                    if(King* k = dynamic_cast<King*>(ChessPieces[selected_piece.y][selected_piece.x]))
+//                    {
+//                        std::cout << "downcast from pieces to king successful\n";
+//                        if(k -> are_in_chess(ChessPieces))
+//                            piece_moves.pop_back();
+//                    }
+//                }
                 //for(int i = 0;i < piece_moves.size(); ++i)
                     //std::cout << piece_moves[i].first << " " << piece_moves[i].second << std::endl;
                 last_piece = selected_piece;

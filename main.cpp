@@ -3,19 +3,12 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "Table.h"
-
-//#include "Pawn.h"
-#include "Rook.h"
-#include "Pieces.h"
-#include "Knight.h"
-//#include "Bishop.h"
-//#include "Queen.h"
-#include "King.h"
-//#include "PieceTexture.h"
-//#include "Init.h"
-//#include "Dot.h"
-//#include "Texture.h"
+#include "PieceTexture.h"
+#include "Dot.h"
+#include "Texture.h"
+#include "TextTexture.h"
 #include "PiecesManager.h"
+#include "EventManager.h"
 
 using namespace std;
 
@@ -30,46 +23,151 @@ SDL_Renderer* renderer = NULL;
 
 int main(int args,char* argv[]){
 
-//    Knight* c1=new Knight(5,5,Pieces::BLACK, 0,6, 0, 0);
-//    Chess[5][5] = c1;
-//    Knight* c2=new Knight(3,2,Pieces::WHITE, 0,6, 0, 0);
-//    Chess[3][2] = c2;
-//    Rook* r1 = new Rook(1,1,Pieces::WHITE, 0,6, 0, 0);
-//    Chess[1][1] = r1;
-//    Rook* r2 = new Rook(1,5,Pieces::BLACK, 0,6, 0, 0);
-//    Chess[1][5] = r2;
-//    King* k1 = new King(5,1,Pieces::BLACK, 0,6, 0, 0);
-//    Chess[5][1] = k1;
-//    King* k2 = new King(3,1,Pieces::WHITE, 0,6, 0, 0);
-//    Chess[3][1] = k2;
+    Texture* ChessDotTexture = new Dot;
+    Texture* ChessPieceTexture = new PieceTexture;
+    Texture* ChessTableTexture = new Table(8);
+    Texture* ChessTextTexture = new TextTexture;
 
-    PiecesManager* mag = PiecesManager::getInstance();
+    PiecesManager* PieceSingleton = PiecesManager::getInstance();
+    EventManager* EventSingleton = EventManager::getInstance();
 
-    mag -> AddPieces( new Knight(6,3,Pieces::BLACK, 0,6, 0, 0) );
+    if(!ChessTableTexture -> Init()){
+        cout << "Jocul se va opri\n";
+        return 0;
+    }
 
-    Pieces* A[8][8];
-    mag -> GetPieces(A);
-    for(int i = 0; i < 8; i++)
-        for(int j = 0; j < 8; j++)
-            if(A[i][j] != NULL)cout<<A[i][j]->getType()<<" "<<A[i][j]->getRow()<<"  "<<A[i][j]->getColumn()<<'\n';
+    if(!ChessDotTexture -> LoadMedia("dot.jpg")){
+         cout << "Jocul se va opri\n";
+         return 0;
+    }
 
-//    Knight* c2=new Knight(7,6,Pieces::BLACK, 0,6, 0, 0);
-//    Chess[7][6] = c2;
-//    Rook* r1 = new Rook(7,0,Pieces::BLACK, 0,6, 0, 0);
-//    Chess[7][0] = r1;
-//    Rook* r2 = new Rook(7,7,Pieces::BLACK, 0,6, 0, 0);
-//    Chess[7][7] = r2;
-//    King* k1 = new King(7,3,Pieces::BLACK, 0,6, 0, 0);
-//    Chess[7][3] = k1;
-//
-//    cout<<boolalpha<<k1 -> point_in_chess(make_pair(7,3), Chess)<<'\n';
-//
-//    vector <pair<int, int> > aux = k1 -> getPossibleMoves(Chess);
-//    for(int i= 0; i <aux.size(); i++)
-//        cout<<aux[i].first <<"  "<<aux[i].second<<"  "<<boolalpha<<k1 -> point_in_chess(aux[i], Chess)<<'\n';
+    if(!ChessTextTexture -> LoadFont()){
+        cout << "Jocul se va opri\n";
+        return 0;
+    }
 
+    if(!ChessTableTexture -> LoadMedia("table.jpg")){
+        cout << "Jocul se va opri\n";
+        return 0;
+    }
+
+    if(!ChessPieceTexture -> LoadMedia("pieces.jpg")){
+        cout << "Jocul se va opri\n";
+        return 0;
+    }
+
+    if(!PieceSingleton -> InitPieces(ChessPieceTexture -> getPieceWidth(), ChessPieceTexture -> getPieceHeight())){
+        cout << "Jocul se va opri\n";
+        return 0;
+    }
+
+    bool quit = false;
+    const int table_width = ChessTableTexture->getWidth();
+    const int table_height = ChessTableTexture->getHeight();
+    const int cell_width = table_width / 8;
+    const int cell_height = (table_height - 30) / 8;
+    const int piece_width = ChessPieceTexture -> getPieceWidth();
+    const int piece_height = ChessPieceTexture -> getPieceHeight();
+    int i, j;
+    SDL_Event e;
+    SDL_Rect rect;
+    SDL_Point selected_piece;
+
+    vector < pair < int, int > > pieceMoves;
+
+    while(quit == false){
+        while(SDL_PollEvent(&e) != 0  && !quit){
+            if(e.type == SDL_QUIT)
+                goto quitGame;
+            else{
+
+                SDL_RenderClear(renderer);
+
+                rect = {0,0,table_width,table_height};
+                ChessTableTexture -> Render(0,0,&rect);
+
+                selected_piece = {-1,-1};
+                selected_piece = EventSingleton -> getEvent(&e);
+
+                if(selected_piece.x > 0 && selected_piece.y <= SCREEN_HEIGHT - 30){
+                    selected_piece.x /= cell_width;
+                    selected_piece.y /= cell_height;
+
+                    pieceMoves = PieceSingleton -> HandleEvent(selected_piece,cell_width,cell_height);
+                }
+
+                Pieces* matrix[8][8];
+                PieceSingleton -> GetPieces(matrix);
+
+                ChessPieceTexture -> setAlpha(500);
+                for(i = 0;i < 8; ++i)
+                    for(j = 0;j < 8; ++j){
+                        if(matrix[i][j] != NULL){
+                            int cornerX = matrix[i][j] -> getTextureCornerY();
+                            int cornerY = matrix[i][j] -> getTextureCornerX();
+                            int tableCornerX = matrix[i][j] -> getTableCornerX();
+                            int tableCornerY = matrix[i][j] -> getTableCornerY();
+
+                            if(matrix[i][j] -> isAlive()){
+                                rect = {cornerX,cornerY,piece_width,piece_height};
+                            if(!matrix[i][j] -> isSelected())
+                                ChessPieceTexture -> Render(tableCornerX * cell_width,tableCornerY * cell_height,&rect);
+                            else{
+                                ChessPieceTexture->setAlpha(50);
+                                ChessPieceTexture->Render(tableCornerX * cell_width,tableCornerY * cell_height,&rect);
+                                ChessPieceTexture->setAlpha(500);
+                                }
+                            }
+                        }
+                    }
+
+                    rect = {0,0,ChessDotTexture->getWidth(),ChessDotTexture->getHeight()};
+                    int len = pieceMoves.size();
+
+                    for(int i = 0;i < len; ++i)
+                        if(pieceMoves[i].first >= 0)
+                        ChessDotTexture -> Render(pieceMoves[i].second * ChessPieceTexture -> getPieceWidth() + 22,
+                            pieceMoves[i].first * ChessPieceTexture -> getPieceHeight() + 21, &rect);
+
+                if(PieceSingleton -> getCheckMate()){
+                    if(PieceSingleton -> getTurn() % 2 == 0)
+                        ChessTextTexture -> LoadText("White lost! GG WP!");
+                    else
+                        ChessTextTexture -> LoadText("Black lost! GG WP!");
+                    quit = true;
+                }
+
+                if(!quit){
+                    if(PieceSingleton -> getTurn() % 2 == 0){
+                        if(PieceSingleton -> getChess())
+                            ChessTextTexture -> LoadText("White`s turn!It`s check!");
+                        else
+                            ChessTextTexture -> LoadText("White`s turn!");
+                    }
+                    else
+                        if(PieceSingleton -> getChess())
+                            ChessTextTexture -> LoadText("Black`s turn!It`s check!");
+                        else
+                            ChessTextTexture -> LoadText("Black`s turn!");
+                }
+
+                rect = {0,0,ChessTextTexture -> getWidth(),ChessTextTexture -> getHeight()};
+                ChessTextTexture -> Render(5,645,&rect);
+
+            SDL_RenderPresent(renderer);
+
+            if(quit)
+                SDL_Delay(1500);
+            }
+        }
+    }
+
+
+    quitGame:
+        {
+            ChessTableTexture -> Close();
+            return 0;
+        }
 
     return 0;
-
 }
-

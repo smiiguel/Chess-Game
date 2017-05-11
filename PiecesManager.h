@@ -18,6 +18,8 @@ private:
     Pieces* ChessPieces[8][8];
     bool selected;
     int turn;
+    bool isChess;
+    bool isCheckMate;
     SDL_Point actual_piece;
     SDL_Point last_piece;
     std::vector<std::pair<int,int >> piece_moves;
@@ -32,6 +34,22 @@ public:
     bool DeletePieces( std::pair < int, int > );
     bool RevivePieces( std::pair < int, int > );
     bool MovePieces( std::pair < int, int >, std::pair < int, int > );
+    Pieces* SwapPieces(std::pair<int,int>,std::pair<int,int>);
+    void RestoreTable(std::pair<int,int>,std::pair<int,int>,Pieces*);
+    std::pair<int,int> getKing(Pieces::Color);
+    std::pair<int,int> getEnemyKing(Pieces::Color);
+
+    inline int getTurn(){
+        return turn;
+    }
+
+    inline bool getChess(){
+        return isChess;
+    }
+
+    inline bool getCheckMate(){
+        return isCheckMate;
+    }
 };
 
 #endif // PIECESMANAGER_H_INCLUDED

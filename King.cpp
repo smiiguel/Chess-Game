@@ -588,14 +588,14 @@ bool King::castling_right ( Pieces* const ChessPiece[8][8] ) const {
             if(ChessPiece[0][7] != NULL)
                 if( ChessPiece[0][4] == NULL && ChessPiece[0][5] == NULL && ChessPiece[0][6] == NULL && !m_moved &&
                         ( ChessPiece[0][7] -> getType() == ROOK && ChessPiece[0][7] -> getMoved() == false ) &&
-                        ChessPiece[0][7] -> getColor() == Pieces::WHITE )
+                        ChessPiece[0][7] -> getColor() == Pieces::WHITE && !point_in_chess(std::make_pair(0,5), ChessPiece) )
                     return true;
         }
         case Pieces::BLACK : {
             if(ChessPiece[7][7] != NULL)
                 if( ChessPiece[7][4] == NULL && ChessPiece[7][5] == NULL && ChessPiece[7][6] == NULL && !m_moved &&
                         ( ChessPiece[7][7] -> getType() == ROOK && ChessPiece[7][7] -> getMoved() == false ) &&
-                        ChessPiece[7][7] -> getColor() == Pieces::BLACK )
+                        ChessPiece[7][7] -> getColor() == Pieces::BLACK && !point_in_chess(std::make_pair(7,5), ChessPiece) )
                     return true;
         }
     }
@@ -610,14 +610,14 @@ bool King::castling_left ( Pieces* const ChessPiece[8][8] ) const {
             if(ChessPiece[0][0] != NULL)
                 if( ChessPiece[0][2] == NULL && ChessPiece[0][1] == NULL && !m_moved &&
                         ( ChessPiece[0][0] -> getType() == ROOK && ChessPiece[0][0] -> getMoved() == false ) &&
-                        ChessPiece[0][0] -> getColor() == Pieces::WHITE )
+                        ChessPiece[0][0] -> getColor() == Pieces::WHITE && !point_in_chess(std::make_pair(0,1), ChessPiece) )
                     return true;
         }
         case Pieces::BLACK : {
             if(ChessPiece[7][0] != NULL)
                 if( ChessPiece[7][2] == NULL && ChessPiece[7][1] == NULL && !m_moved &&
                         ( ChessPiece[7][0] -> getType() == ROOK && ChessPiece[7][0] -> getMoved() == false ) &&
-                        ChessPiece[7][0] -> getColor() == Pieces::BLACK )
+                        ChessPiece[7][0] -> getColor() == Pieces::BLACK && !point_in_chess(std::make_pair(7,1), ChessPiece) )
                     return true;
         }
     }
